@@ -61,7 +61,11 @@ Email-app/
    ```
 2. **Cài đặt các thư viện yêu cầu từ file requirements.txt**:
    ```bash
-   pip install -r requirements.txt or python -m pip install -r requirements.txt
+   pip install -r requirements.txt
+   ```
+   or
+   ```bash
+   python -m pip install -r requirements.txt
    ```
 3. **Tải dữ liệu NLTK cần thiết**:
    ```bash
@@ -95,6 +99,4 @@ Dưới đây là độ chính xác của từng mô hình trong quá trình hu�
 - Logistic Regression: Độ chính xác 0.98
 - Mô hình có độ chính xác cao nhất sẽ được lưu và sử dụng trong ứng dụng.
 
-```
-
-```
+Link colab: https://colab.research.google.com/drive/1xP39wPneFdJOZdnMcm88HDRkYLgcnjpc#scrollTo=iL132S4jXbaP
