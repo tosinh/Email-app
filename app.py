@@ -1,5 +1,3 @@
-# app.py
-
 from flask import Flask, render_template, request
 import joblib
 
@@ -12,15 +10,16 @@ tfidf_vectorizer = joblib.load("tfidf_vectorizer.pkl")
 @app.route("/", methods=["GET", "POST"])
 def index():
     prediction = ""
+    text = ""  # Biến lưu nội dung nhập vào
     if request.method == "POST":
-        text = request.form.get("text")
+        text = request.form.get("text")  # Lấy nội dung nhập từ form
         if text:
             text_vectorized = tfidf_vectorizer.transform([text])
             prediction_label = model.predict(text_vectorized)[0]
             prediction = "Là thư rác" if prediction_label == 1 else "Không phải thư rác"
         else:
             prediction = "Nhập nội dung email"
-    return render_template("index.html", prediction=prediction)
+    return render_template("index.html", prediction=prediction, text=text)
 
 if __name__ == "__main__":
     app.run(debug=True)
