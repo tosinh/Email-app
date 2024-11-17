@@ -12,7 +12,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, classification_report
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
 # Text processing
 from nltk.corpus import stopwords
@@ -108,3 +108,63 @@ joblib.dump(best_model, "best_model.pkl")
 joblib.dump(tfidf_vectorizer, "tfidf_vectorizer.pkl")
 
 print("\nModel and vectorizer saved successfully.")
+
+
+#plots
+
+# Ensure the plots directory exists
+os.makedirs("plots", exist_ok=True)
+
+# Plot class distribution
+plt.figure(figsize=(6, 4))
+sns.countplot(data=df, x="label", palette="viridis")
+plt.title("Class Distribution")
+plt.xlabel("Class")
+plt.ylabel("Count")
+plt.tight_layout()
+plt.savefig("plots/class_distribution.png")
+plt.close()
+
+# Function to plot and save confusion matrix
+def plot_confusion_matrix(y_true, y_pred, model_name):
+    from sklearn.metrics import confusion_matrix
+    cm = confusion_matrix(y_true, y_pred)
+    
+    plt.figure(figsize=(6, 5))
+    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=["Ham", "Spam"], yticklabels=["Ham", "Spam"])
+    plt.title(f"Confusion Matrix - {model_name}")
+    plt.xlabel("Predicted")
+    plt.ylabel("Actual")
+    plt.tight_layout()
+    plt.savefig(f"plots/confusion_matrix_{model_name}.png")
+    plt.close()
+
+# Plot confusion matrix for each model
+from matplotlib.backends.backend_pdf import PdfPages
+
+pdf_path = "plots/plots.pdf"
+with PdfPages(pdf_path) as pdf:
+    # Add class distribution to PDF
+    sns.countplot(data=df, x="label", palette="viridis")
+    plt.title("Class Distribution")
+    plt.xlabel("Class")
+    plt.ylabel("Count")
+    pdf.savefig()  # Save to PDF
+    plt.close()
+
+    # Add confusion matrices for each model
+    for name, model in models.items():
+        y_pred = model.predict(X_test)
+        plot_confusion_matrix(y_test, y_pred, name)
+        
+        # Add to PDF
+        cm = confusion_matrix(y_test, y_pred)
+        plt.figure(figsize=(6, 5))
+        sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=["Ham", "Spam"], yticklabels=["Ham", "Spam"])
+        plt.title(f"Confusion Matrix - {name}")
+        plt.xlabel("Predicted")
+        plt.ylabel("Actual")
+        pdf.savefig()  # Save to PDF
+        plt.close()
+
+print("\nPlots saved successfully in 'plots/' directory.")
